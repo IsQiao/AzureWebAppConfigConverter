@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Web App Configuration Tool</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Azure Web App Configuration Converter</h1>
+        <div class="mb-3">
+            <textarea id="jsonInput" class="form-control" rows="10" placeholder="Paste 'WebSiteManagementClient: properties' here"></textarea>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-primary" onclick="convertToJsonArray()">Convert</button>
+        </div>
+        <div class="mb-3">
+            <textarea id="output" class="form-control" rows="10" readonly placeholder="Converted Azure web app configuration will appear here"></textarea>
+        </div>
+        <div>
+            <button class="btn btn-secondary" onclick="copyResult()">Copy Result</button>
+        </div>
+    </div>
+
+    <script>
+        // Get elements
+        const jsonInput = document.getElementById('jsonInput');
+        const outputTextarea = document.getElementById('output');
+
+        // Conversion function
+        function convertToJsonArray() {
+            try {
+                // Parse user input JSON string
+                const userInput = jsonInput.value.trim();
+                const jsonObject = JSON.parse(userInput);
+
+                // Convert to the specified format of JSON array
+                const result = [];
+                for (const key in jsonObject) {
+                    result.push({
+                        "name": key,
+                        "value": jsonObject[key]
+                    });
+                }
+
+                // Display conversion result
+                outputTextarea.value = JSON.stringify(result, null, 2);
+            } catch (error) {
+                // Show error message if an error occurs
+                outputTextarea.value = 'Error: ' + error.message;
+            }
+        }
+
+        // Copy result function
+        function copyResult() {
+            outputTextarea.select();
+            document.execCommand('copy');
+            alert('Copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
