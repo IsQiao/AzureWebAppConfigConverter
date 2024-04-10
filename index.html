@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,17 +12,27 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1 class="mb-4">Azure Web App Configuration Converter</h1>
         <div class="mb-3">
-            <textarea id="jsonInput" class="form-control" rows="10" placeholder="Paste 'WebSiteManagementClient: properties' here"></textarea>
+            <textarea id="appConfigInput" class="form-control" rows="8"
+                placeholder="Paste 'app configurations: properties' here"></textarea>
         </div>
         <div class="mb-3">
-            <button class="btn btn-primary" onclick="convertToJsonArray()">Convert</button>
+            <button class="btn btn-primary" onclick="convertAppConfigurations()">Convert</button>
         </div>
         <div class="mb-3">
-            <textarea id="output" class="form-control" rows="10" readonly placeholder="Converted Azure web app configuration will appear here"></textarea>
+            <textarea id="connectionStringInput" class="form-control" rows="8"
+                placeholder="Paste 'connection_strings: properties' here"></textarea>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-primary" onclick="convertConnectionStrings()">Convert</button>
+        </div>
+        <div class="mb-3">
+            <textarea id="output" class="form-control" rows="10" readonly
+                placeholder="Converted Azure web app configuration will appear here"></textarea>
         </div>
         <div>
             <button class="btn btn-secondary" onclick="copyResult()">Copy Result</button>
@@ -30,14 +41,14 @@
 
     <script>
         // Get elements
-        const jsonInput = document.getElementById('jsonInput');
+        const appConfigInput = document.getElementById('appConfigInput');
+        const connectionStringInput = document.getElementById('connectionStringInput');
         const outputTextarea = document.getElementById('output');
 
-        // Conversion function
-        function convertToJsonArray() {
+        function convertAppConfigurations() {
             try {
                 // Parse user input JSON string
-                const userInput = jsonInput.value.trim();
+                const userInput = appConfigInput.value.trim();
                 const jsonObject = JSON.parse(userInput);
 
                 // Convert to the specified format of JSON array
@@ -57,6 +68,30 @@
             }
         }
 
+        function convertConnectionStrings() {
+            try {
+                // Parse user input JSON string
+                const userInput = connectionStringInput.value.trim();
+                const jsonObject = JSON.parse(userInput);
+
+                // Convert to the specified format of JSON array
+                const result = [];
+                for (const key in jsonObject) {
+                    result.push({
+                        "name": key,
+                        "value": jsonObject[key].value,
+                        "type": jsonObject[key].type
+                    });
+                }
+
+                // Display conversion result
+                outputTextarea.value = JSON.stringify(result, null, 2);
+            } catch (error) {
+                // Show error message if an error occurs
+                outputTextarea.value = 'Error: ' + error.message;
+            }
+        }
+
         // Copy result function
         function copyResult() {
             outputTextarea.select();
@@ -65,4 +100,5 @@
         }
     </script>
 </body>
+
 </html>
